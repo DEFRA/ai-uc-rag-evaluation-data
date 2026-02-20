@@ -11,8 +11,12 @@ class PostgresConfig(pydantic_settings.BaseSettings):
     model_config = pydantic_settings.SettingsConfigDict()
     host: str = pydantic.Field(..., alias="POSTGRES_HOST")
     port: int = pydantic.Field(5432, alias="POSTGRES_PORT")
-    database: str = pydantic.Field(default="ai_uc_rag_evaluation_data", alias="POSTGRES_DB")
-    user: str = pydantic.Field(default="ai_uc_rag_evaluation_data", alias="POSTGRES_USER")
+    database: str = pydantic.Field(
+        default="ai_uc_rag_evaluation_data", alias="POSTGRES_DB"
+    )
+    user: str = pydantic.Field(
+        default="ai_uc_rag_evaluation_data", alias="POSTGRES_USER"
+    )
     password: str | None = pydantic.Field(default=None, alias="POSTGRES_PASSWORD")
     ssl_mode: str = pydantic.Field(default="require", alias="POSTGRES_SSL_MODE")
     rds_truststore: str | None = pydantic.Field(

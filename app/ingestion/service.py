@@ -42,9 +42,10 @@ class IngestionService:
             IngestionAlreadyInProgressError: If ingest is already running for this group
         """
         if group.group_id in _ingest_in_progress:
-            raise ingestion_models.IngestionAlreadyInProgressError(
+            error_message = (
                 f"Ingestion already in progress for group '{group.group_id}'"
             )
+            raise ingestion_models.IngestionAlreadyInProgressError(error_message)
         _ingest_in_progress.add(group.group_id)
 
         snapshot = await self.snapshot_service.create_snapshot(
