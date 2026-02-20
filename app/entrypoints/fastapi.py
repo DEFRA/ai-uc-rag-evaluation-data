@@ -1,50 +1,21 @@
-from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
-from logging import getLogger
+import logging
 
 import uvicorn
-from fastapi import FastAPI
 
-from app.common.mongo import get_mongo_client
-from app.common.tracing import TraceIdMiddleware
-from app.config import config
-from app.example.router import router as example_router
-from app.health.router import router as health_router
+from app import config
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
-@asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    # Startup
-    client = await get_mongo_client()
-    logger.info("MongoDB client connected")
-    yield
-    # Shutdown
-    if client:
-        await client.close()
-        logger.info("MongoDB client closed")
-
-
-app = FastAPI(lifespan=lifespan)
-
-# Setup middleware
-app.add_middleware(TraceIdMiddleware)
-
-# Setup Routes
-app.include_router(health_router)
-app.include_router(example_router)
-
-
-def main() -> None:  # pragma: no cover
+def main() -> None:
     uvicorn.run(
-        "app.entrypoints.fastapi:app",
-        host=config.host,
-        port=config.port,
-        log_config=config.log_config,
-        reload=config.python_env == "development",
+        "app.infra.fastapi_app:app",
+        host=config.config.host,
+        port=config.config.port,
+        log_config=config.config.log_config,
+        reload=config.config.python_env == "development",
     )
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     main()

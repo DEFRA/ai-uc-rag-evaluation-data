@@ -3,21 +3,31 @@ name = "ai-uc-rag-evaluation-data"
 version = "0.1.0"
 description = "ai-uc-rag-evaluation-data"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
+    "apscheduler==3.11.0",
     "asgi-logger==0.1.0",
     "aws-embedded-metrics==3.3.0",
+    "boto3==1.40.18",
+    "chonkie==1.3.0",
     "dnspython==2.7.0",
     "ecs-logging==2.2.0",
     "fastapi==0.129.0",
+    "fastmcp==2.12.4",
     "httpx==0.28.1",
+    "pgvector==0.4.1",
+    "psycopg[binary,pool]==3.2.10",
     "pydantic-settings==2.9.1",
     "pymongo[aws,encryption,snappy,zstd]==4.13.1",
+    "sqlalchemy==2.0.43",
+    "click>=8.0,<8.2",
+    "typer==0.15.1",
     "uvicorn==0.34.3",
 ]
 
 [dependency-groups]
 dev = [
+    "debugpy==1.8.17",
     "httpx==0.28.1",
     "mypy==1.13.0",
     "pytest==8.4.0",
@@ -30,6 +40,7 @@ dev = [
 
 [project.scripts]
 ai-uc-rag-evaluation-data = "app.entrypoints.fastapi:main"
+knowledge-cli = "app.entrypoints.cli:main"
 
 [build-system]
 requires = ["hatchling"]
