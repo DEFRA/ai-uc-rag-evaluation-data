@@ -64,7 +64,7 @@ output = "coverage/coverage.xml"
 format = "uv run ruff format . && uv run ruff check . --fix"
 lint = "uv run ruff format ./app ./tests --check && uv run ruff check ./app ./tests"
 typecheck = "uv run mypy ./app ./tests"
-test = "uv run task lint && uv run coverage run -m pytest -vv && uv run coverage html && uv run coverage xml"
+test = "uv run task lint && uv run coverage run -m pytest -vv && uv run coverage report && uv run coverage html && uv run coverage xml"
 
 [tool.pytest]
 minversion = "7.0"
