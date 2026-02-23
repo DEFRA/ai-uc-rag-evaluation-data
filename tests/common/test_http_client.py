@@ -1,15 +1,16 @@
 import httpx
+import pytest
 
 from app.common.http_client import hook_request_tracing
 from app.common.tracing import ctx_trace_id
 
 
-def mock_handler(request):
+def mock_handler(request: httpx.Request) -> httpx.Response:
     request_id = request.headers.get("x-cdp-request-id", "")
     return httpx.Response(200, text=request_id)
 
 
-def test_trace_id_missing():
+def test_trace_id_missing() -> None:
     ctx_trace_id.set("")
     client = httpx.Client(
         event_hooks={"request": [hook_request_tracing]},
@@ -19,7 +20,7 @@ def test_trace_id_missing():
     assert resp.text == ""
 
 
-def test_trace_id_set():
+def test_trace_id_set() -> None:
     ctx_trace_id.set("trace-id-value")
     client = httpx.Client(
         event_hooks={"request": [hook_request_tracing]},
@@ -29,7 +30,7 @@ def test_trace_id_set():
     assert resp.text == "trace-id-value"
 
 
-def test_create_client_with_proxy(monkeypatch):
+def test_create_client_with_proxy(monkeypatch: pytest.MonkeyPatch) -> None:
     import importlib
 
     from pydantic import HttpUrl
