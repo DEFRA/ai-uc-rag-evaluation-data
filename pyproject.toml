@@ -20,7 +20,7 @@ dependencies = [
     "pydantic-settings==2.9.1",
     "pymongo[aws,encryption,snappy,zstd]==4.13.1",
     "sqlalchemy==2.0.43",
-    "click>=8.0,<8.2",
+    "click==8.1.8",
     "typer==0.15.1",
     "uvicorn==0.34.3",
 ]
