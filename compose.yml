@@ -87,6 +87,7 @@ services:
     env_file:
       - "compose/aws.env"
       - "compose/postgres.env"
+      - "compose/app.env"
       - "compose/secrets.env"
     environment:
       PORT: ${PORT:-8085}
