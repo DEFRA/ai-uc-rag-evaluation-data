@@ -4,7 +4,9 @@ import fastapi
 import pymongo.asynchronous.database
 
 from app import config
-from app.common import bedrock, mongo, postgres, s3
+from app.common import mongo, postgres, s3
+from app.common.embedding import pydantic_ai
+from app.common.embedding.service import AbstractEmbeddingService
 from app.ingestion import repository as ingestion_repository
 from app.ingestion import service as ingestion_service
 from app.knowledge_management import repository as km_repository
@@ -42,11 +44,9 @@ def get_knowledge_vector_repository_for_ingestion(
     return snapshot_repository.PostgresKnowledgeVectorRepository(session_factory)
 
 
-def get_bedrock_embedding_service() -> bedrock.AbstractEmbeddingService:
+def get_pydantic_embedding_service() -> AbstractEmbeddingService:
     """Dependency injection for BedrockEmbeddingService."""
-    return bedrock.BedrockEmbeddingService(
-        bedrock.get_bedrock_client(), config.config.bedrock_embedding_config
-    )
+    return pydantic_ai.PydanticAiEmbeddingService(config.config)
 
 
 def get_snapshot_service_for_ingestion(
@@ -56,8 +56,8 @@ def get_snapshot_service_for_ingestion(
     vector_repo: snapshot_repository.AbstractKnowledgeVectorRepository = fastapi.Depends(
         get_knowledge_vector_repository_for_ingestion
     ),
-    embedding_service: bedrock.AbstractEmbeddingService = fastapi.Depends(
-        get_bedrock_embedding_service
+    embedding_service: AbstractEmbeddingService = fastapi.Depends(
+        get_pydantic_embedding_service
     ),
 ) -> snapshot_service.SnapshotService:
     """Dependency injection for SnapshotService used by ingestion service."""
@@ -79,8 +79,8 @@ def get_ingestion_service(
     ingestion_repository: ingestion_repository.AbstractIngestionDataRepository = fastapi.Depends(
         get_ingestion_data_repository
     ),
-    embedding_service: bedrock.AbstractEmbeddingService = fastapi.Depends(
-        get_bedrock_embedding_service
+    embedding_service: AbstractEmbeddingService = fastapi.Depends(
+        get_pydantic_embedding_service
     ),
     snapshot_service: snapshot_service.SnapshotService = fastapi.Depends(
         get_snapshot_service_for_ingestion

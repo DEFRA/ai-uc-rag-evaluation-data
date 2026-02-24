@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from app.common import bedrock
+from app.common.embedding.service import AbstractEmbeddingService
 from app.knowledge_management import models as km_models
 from app.snapshot import models, repository
 
@@ -15,7 +15,7 @@ class SnapshotService:
         self,
         snapshot_repo: repository.MongoKnowledgeSnapshotRepository,
         vector_repo: repository.AbstractKnowledgeVectorRepository,
-        embedding_service: bedrock.AbstractEmbeddingService,
+        embedding_service: AbstractEmbeddingService,
     ):
         self._snapshot_repo = snapshot_repo
         self._vector_repo = vector_repo
@@ -126,7 +126,7 @@ class SnapshotService:
 
         snapshot = await self.get_by_id(group.active_snapshot)
 
-        embedding = self._embedding_service.generate_embeddings(query)
+        embedding = await self._embedding_service.generate_embeddings(query)
 
         documents = await self._vector_repo.query_by_snapshot(
             embedding, group.active_snapshot, max_results
