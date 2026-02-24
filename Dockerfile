@@ -3,7 +3,7 @@ ARG PARENT_VERSION=latest-3.13
 ARG PORT=8085
 ARG PORT_DEBUG=8086
 
-FROM --platform=linux/amd64 defradigital/python-development:${PARENT_VERSION} AS development
+FROM defradigital/python-development:${PARENT_VERSION} AS development
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
