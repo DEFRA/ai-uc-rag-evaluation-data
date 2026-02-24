@@ -29,7 +29,7 @@ dev = [
 ]
 
 [project.scripts]
-ai-uc-content-swarm-runtime = "app.entrypoints.fastapi:main"
+ai-uc-rag-evaluation-data = "app.entrypoints.fastapi:main"
 
 [build-system]
 requires = ["hatchling"]
