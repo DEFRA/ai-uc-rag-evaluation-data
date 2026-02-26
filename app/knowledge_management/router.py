@@ -154,7 +154,8 @@ async def get_group(
         )
     except models.KnowledgeGroupNotFoundError as err:
         raise fastapi.HTTPException(
-            status_code=404, detail=f"Knowledge group with ID '{group_id}' not found"
+            status_code=fastapi.status.HTTP_404_NOT_FOUND,
+            detail=f"Knowledge group with ID '{group_id}' not found",
         ) from err
 
 
@@ -236,12 +237,13 @@ async def ingest_group(
         }
     except ingestion_models.IngestionAlreadyInProgressError as err:
         raise fastapi.HTTPException(
-            status_code=409,
+            status_code=fastapi.status.HTTP_409_CONFLICT,
             detail=str(err),
         ) from err
     except models.KnowledgeGroupNotFoundError as err:
         raise fastapi.HTTPException(
-            status_code=404, detail=f"Knowledge group with ID '{group_id}' not found"
+            status_code=fastapi.status.HTTP_404_NOT_FOUND,
+            detail=f"Knowledge group with ID '{group_id}' not found",
         ) from err
 
 
@@ -291,5 +293,6 @@ async def add_source(
         )
     except models.KnowledgeGroupNotFoundError as err:
         raise fastapi.HTTPException(
-            status_code=404, detail=f"Knowledge group with ID '{group_id}' not found"
+            status_code=fastapi.status.HTTP_404_NOT_FOUND,
+            detail=f"Knowledge group with ID '{group_id}' not found",
         ) from err
