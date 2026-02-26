@@ -146,12 +146,6 @@ async def activate_snapshot(
             group_id=snapshot.group_id, snapshot_id=snapshot_id
         )
 
-        logger.info(
-            "Successfully activated snapshot %s for group %s",
-            snapshot_id,
-            snapshot.group_id,
-        )
-
         return {
             "message": f"Snapshot '{snapshot_id}' activated successfully for group '{snapshot.group_id}'"
         }

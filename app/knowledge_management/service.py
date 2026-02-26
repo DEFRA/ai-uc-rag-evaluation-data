@@ -105,6 +105,4 @@ class KnowledgeManagementService:
         # Update the domain model and return updated group
         group.add_source(source)
 
-        logger.info("Added source %s to group %s", source.source_id, group_id)
-
         return group
