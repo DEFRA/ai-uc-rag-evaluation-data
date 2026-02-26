@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <!-- Version 2.0.0 - Vector Storage Support -->
+    <changeSet author="DEFRA" id="2000000000000-0">
+        <tagDatabase tag="v2.0.0" />
+    </changeSet>
+
+    <changeSet author="DEFRA" id="2000000000000-1">
+        <addColumn tableName="knowledge_vectors">
+            <column name="snapshot_id" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="source_id" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="metadata" type="JSONB">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="DEFRA" id="2000000000000-2">
+        <sql>
+            CREATE INDEX ON knowledge_vectors 
+            USING hnsw (embedding vector_cosine_ops);
+        </sql>
+        <rollback>
+            DROP INDEX IF EXISTS knowledge_vectors_embedding_idx;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

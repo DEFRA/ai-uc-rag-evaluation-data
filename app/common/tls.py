@@ -1,5 +1,4 @@
 import base64
-import binascii
 import os
 import ssl
 import tempfile
@@ -13,13 +12,13 @@ ctx: ssl.SSLContext | None = None
 
 # Custom CA Certificates are passed to services on deployment
 # as base64 encoded environment variables with the prefix `TRUSTSTORE_`
-def extract_all_certs() -> dict[str, str]:
+def extract_all_certs():
     certs = {}
     for var_name, var_value in os.environ.items():
         if var_name.startswith("TRUSTSTORE_"):
             try:
                 decoded_value = base64.b64decode(var_value)
-            except binascii.Error as err:
+            except base64.binascii.Error as err:
                 logger.error("Error decoding value for %s. Skipping. %s", var_name, err)
                 continue
             with tempfile.NamedTemporaryFile(
@@ -32,7 +31,7 @@ def extract_all_certs() -> dict[str, str]:
     return certs
 
 
-def load_certs_into_context(certs: dict[str, str]) -> ssl.SSLContext:
+def load_certs_into_context(certs):
     ctx = ssl.create_default_context()
     for key in certs:
         try:
@@ -43,7 +42,7 @@ def load_certs_into_context(certs: dict[str, str]) -> ssl.SSLContext:
     return ctx
 
 
-def init_custom_certificates() -> dict[str, str]:
+def init_custom_certificates():
     global custom_ca_certs
     global ctx
     logger.info("Initializing custom certificates")

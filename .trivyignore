@@ -1,0 +1,2 @@
+# There is no fix for this and only a vulnerability if attackers can access the cache directory.
+CVE-2025-69872

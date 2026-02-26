@@ -1,9 +1,14 @@
 # Set default values for build arguments
-ARG PARENT_VERSION=latest-3.12
+ARG PARENT_VERSION=latest-3.13
 ARG PORT=8085
 ARG PORT_DEBUG=8086
 
 FROM defradigital/python-development:${PARENT_VERSION} AS development
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
+    && rm -rf /var/lib/apt/lists/*
+USER nonroot
 
 ENV PATH="/home/nonroot/.venv/bin:${PATH}"
 ENV LOG_CONFIG="logging-dev.json"
@@ -34,8 +39,8 @@ ENV LOG_CONFIG="logging.json"
 
 USER root
 
-RUN apt update && \
-    apt install -y curl
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential curl \
+    && rm -rf /var/lib/apt/lists/*
 
 USER nonroot
 

@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import Any
 
 import httpx
 
@@ -8,32 +7,16 @@ from app.config import config
 
 logger = getLogger(__name__)
 
-async_proxy_mounts = (
-    {
-        "http://": httpx.AsyncHTTPTransport(proxy=str(config.http_proxy)),
-        "https://": httpx.AsyncHTTPTransport(proxy=str(config.http_proxy)),
-    }
-    if config.http_proxy
-    else {}
-)
-
-sync_proxy_mounts = (
-    {
-        "http://": httpx.HTTPTransport(proxy=str(config.http_proxy)),
-        "https://": httpx.HTTPTransport(proxy=str(config.http_proxy)),
-    }
-    if config.http_proxy
-    else {}
-)
+proxies = {"http": str(config.http_proxy), "https": str(config.http_proxy)}
 
 
-async def async_hook_request_tracing(request: httpx.Request) -> None:
+async def async_hook_request_tracing(request):
     trace_id = ctx_trace_id.get(None)
     if trace_id:
         request.headers[config.tracing_header] = trace_id
 
 
-def hook_request_tracing(request: httpx.Request) -> None:
+def hook_request_tracing(request):
     trace_id = ctx_trace_id.get(None)
     if trace_id:
         request.headers[config.tracing_header] = trace_id
@@ -49,13 +32,14 @@ def create_async_client(request_timeout: int = 30) -> httpx.AsyncClient:
     Returns:
         Configured httpx.AsyncClient instance
     """
-    client_kwargs: dict[str, Any] = {
+    client_kwargs = {
         "timeout": request_timeout,
         "event_hooks": {"request": [async_hook_request_tracing]},
     }
 
     if config.http_proxy:
-        client_kwargs["mounts"] = async_proxy_mounts
+        logger.info("Using HTTP proxy: %s", config.http_proxy)
+        client_kwargs["proxies"] = proxies
 
     return httpx.AsyncClient(**client_kwargs)
 
@@ -70,12 +54,13 @@ def create_client(request_timeout: int = 30) -> httpx.Client:
     Returns:
         Configured httpx.Client instance
     """
-    client_kwargs: dict[str, Any] = {
+    client_kwargs = {
         "timeout": request_timeout,
         "event_hooks": {"request": [hook_request_tracing]},
     }
 
     if config.http_proxy:
-        client_kwargs["mounts"] = sync_proxy_mounts
+        logger.info("Using HTTP proxy: %s", config.http_proxy)
+        client_kwargs["proxies"] = proxies
 
     return httpx.Client(**client_kwargs)

@@ -3,21 +3,31 @@ name = "ai-uc-rag-evaluation-data"
 version = "0.1.0"
 description = "ai-uc-rag-evaluation-data"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
+    "apscheduler==3.11.0",
     "asgi-logger==0.1.0",
     "aws-embedded-metrics==3.3.0",
+    "boto3==1.40.18",
+    "chonkie==1.3.0",
     "dnspython==2.7.0",
     "ecs-logging==2.2.0",
     "fastapi==0.129.0",
+    "fastmcp==2.14.5",
     "httpx==0.28.1",
+    "pgvector==0.4.1",
+    "psycopg[binary,pool]==3.2.10",
     "pydantic-settings==2.9.1",
     "pymongo[aws,encryption,snappy,zstd]==4.13.1",
-    "uvicorn==0.34.3",
+    "sqlalchemy==2.0.43",
+    "click==8.1.8",
+    "typer==0.15.1",
+    "uvicorn==0.41.0",
 ]
 
 [dependency-groups]
 dev = [
+    "debugpy==1.8.17",
     "httpx==0.28.1",
     "mypy==1.13.0",
     "pytest==8.4.0",
@@ -30,6 +40,7 @@ dev = [
 
 [project.scripts]
 ai-uc-rag-evaluation-data = "app.entrypoints.fastapi:main"
+knowledge-cli = "app.entrypoints.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -53,7 +64,7 @@ output = "coverage/coverage.xml"
 format = "uv run ruff format . && uv run ruff check . --fix"
 lint = "uv run ruff format ./app ./tests --check && uv run ruff check ./app ./tests"
 typecheck = "uv run mypy ./app ./tests"
-test = "uv run task lint && uv run task typecheck && uv run coverage run -m pytest -vv && uv run coverage html && uv run coverage xml"
+test = "uv run task lint && uv run coverage run -m pytest -vv && uv run coverage report && uv run coverage html && uv run coverage xml"
 
 [tool.pytest]
 minversion = "7.0"
