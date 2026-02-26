@@ -117,7 +117,11 @@ async def create_group(
 
 
 @router.get(
-    "/knowledge/groups/{group_id}", response_model=api_schemas.KnowledgeGroupResponse
+    "/knowledge/groups/{group_id}", 
+    response_model=api_schemas.KnowledgeGroupResponse,
+    responses={
+        fastapi.status.HTTP_404_NOT_FOUND: {"description": "Knowledge group not found"}
+    },
 )
 async def get_group(
     group_id: str,
@@ -187,7 +191,12 @@ async def list_group_snapshots(
 
 
 @router.post(
-    "/knowledge/groups/{group_id}/ingest", status_code=fastapi.status.HTTP_202_ACCEPTED
+    "/knowledge/groups/{group_id}/ingest", 
+    status_code=fastapi.status.HTTP_202_ACCEPTED,
+    responses={
+        fastapi.status.HTTP_404_NOT_FOUND: {"description": "Knowledge group not found"},
+        fastapi.status.HTTP_409_CONFLICT: {"description": "Ingestion already in progress"},
+    },
 )
 async def ingest_group(
     group_id: str,
@@ -237,6 +246,9 @@ async def ingest_group(
 @router.patch(
     "/knowledge/groups/{group_id}/sources",
     response_model=api_schemas.KnowledgeGroupResponse,
+    responses={
+        fastapi.status.HTTP_404_NOT_FOUND: {"description": "Knowledge group not found"},
+    },
 )
 async def add_source(
     group_id: str,
