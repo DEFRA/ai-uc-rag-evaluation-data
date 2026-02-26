@@ -1,4 +1,5 @@
 import datetime
+from typing import Annotated
 
 import fastapi
 
@@ -32,9 +33,10 @@ def _map_sources(
     },
 )
 async def list_groups(
-    service: km_service.KnowledgeManagementService = fastapi.Depends(
-        dependencies.get_knowledge_management_service
-    ),
+    service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(dependencies.get_knowledge_management_service),
+    ],
 ):
     """
     List all knowledge groups.
@@ -71,9 +73,10 @@ async def list_groups(
 )
 async def create_group(
     group: api_schemas.CreateKnowledgeGroupRequest,
-    service: km_service.KnowledgeManagementService = fastapi.Depends(
-        dependencies.get_knowledge_management_service
-    ),
+    service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(dependencies.get_knowledge_management_service),
+    ],
 ):
     """
     Create a new knowledge group.
@@ -118,9 +121,10 @@ async def create_group(
 )
 async def get_group(
     group_id: str,
-    service: km_service.KnowledgeManagementService = fastapi.Depends(
-        dependencies.get_knowledge_management_service
-    ),
+    service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(dependencies.get_knowledge_management_service),
+    ],
 ):
     """
     Retrieve a knowledge group by its group ID.
@@ -153,9 +157,10 @@ async def get_group(
 @router.get("/knowledge/groups/{group_id}/snapshots", response_model=list[dict])
 async def list_group_snapshots(
     group_id: str,
-    service: snapshot_service.SnapshotService = fastapi.Depends(
-        snapshot_dependencies.get_snapshot_service
-    ),
+    service: Annotated[
+        snapshot_service.SnapshotService,
+        fastapi.Depends(snapshot_dependencies.get_snapshot_service),
+    ],
 ):
     """
     List all snapshots for a specific knowledge group.
@@ -186,12 +191,14 @@ async def list_group_snapshots(
 )
 async def ingest_group(
     group_id: str,
-    km_service: km_service.KnowledgeManagementService = fastapi.Depends(
-        dependencies.get_knowledge_management_service
-    ),
-    ingestion_service: ingestion_service.IngestionService = fastapi.Depends(
-        dependencies.get_ingestion_service
-    ),
+    km_service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(dependencies.get_knowledge_management_service),
+    ],
+    ingestion_service: Annotated[
+        ingestion_service.IngestionService,
+        fastapi.Depends(dependencies.get_ingestion_service),
+    ],
 ):
     """
     Initiate the ingestion process for a specific knowledge group.
@@ -234,9 +241,10 @@ async def ingest_group(
 async def add_source(
     group_id: str,
     source_data: api_schemas.KnowledgeSource,
-    service: km_service.KnowledgeManagementService = fastapi.Depends(
-        dependencies.get_knowledge_management_service
-    ),
+    service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(dependencies.get_knowledge_management_service),
+    ],
 ):
     """
     Add a source to a knowledge group.

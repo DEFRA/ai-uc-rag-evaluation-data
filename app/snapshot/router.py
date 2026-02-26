@@ -1,4 +1,5 @@
 import logging
+from typing import Annotated
 
 import fastapi
 
@@ -14,9 +15,10 @@ router = fastapi.APIRouter(tags=["snapshots"])
 @router.get("/snapshots/{snapshot_id}", response_model=dict)
 async def get_snapshot(
     snapshot_id: str,
-    service: service.SnapshotService = fastapi.Depends(
-        dependencies.get_snapshot_service
-    ),
+    service: Annotated[
+        service.SnapshotService,
+        fastapi.Depends(dependencies.get_snapshot_service),
+    ],
 ):
     """
     Retrieve a snapshot by its ID.
@@ -53,12 +55,14 @@ async def get_snapshot(
 )
 async def query_snapshot(
     request: api_schemas.QuerySnapshotRequest,
-    knowledge_service: km_service.KnowledgeManagementService = fastapi.Depends(
-        km_dependencies.get_knowledge_management_service
-    ),
-    snp_service: service.SnapshotService = fastapi.Depends(
-        dependencies.get_snapshot_service
-    ),
+    knowledge_service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(km_dependencies.get_knowledge_management_service),
+    ],
+    snp_service: Annotated[
+        service.SnapshotService,
+        fastapi.Depends(dependencies.get_snapshot_service),
+    ],
 ):
     """
     Query a snapshot for relevant documents based on a search query.
@@ -112,12 +116,14 @@ async def query_snapshot(
 )
 async def activate_snapshot(
     snapshot_id: str,
-    snapshot_service: service.SnapshotService = fastapi.Depends(
-        dependencies.get_snapshot_service
-    ),
-    knowledge_service: km_service.KnowledgeManagementService = fastapi.Depends(
-        km_dependencies.get_knowledge_management_service
-    ),
+    snapshot_service: Annotated[
+        service.SnapshotService,
+        fastapi.Depends(dependencies.get_snapshot_service),
+    ],
+    knowledge_service: Annotated[
+        km_service.KnowledgeManagementService,
+        fastapi.Depends(km_dependencies.get_knowledge_management_service),
+    ],
 ):
     """
     Activate a snapshot by setting it as the active snapshot for its knowledge group.
