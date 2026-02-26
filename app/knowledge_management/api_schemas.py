@@ -47,7 +47,7 @@ class CreateKnowledgeGroupRequest(BaseModel):
         max_length=255,
     )
     sources: list[KnowledgeSource] = Field(
-        ..., description="List of knowledge group sources", min_items=1
+        ..., description="List of knowledge group sources"
     )
 
 
