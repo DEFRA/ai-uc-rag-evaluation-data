@@ -15,7 +15,7 @@ class PydanticAiEmbeddingService(AbstractEmbeddingService):
             region_name=config.aws_region,
         )
         self._embedder = Embedder(
-            settings=BedrockEmbeddingSettings(dimensions=1024),
+            settings=BedrockEmbeddingSettings(),
             model=BedrockEmbeddingModel(
                 config.bedrock_embedding_config.model_id, provider=provider
             ),
