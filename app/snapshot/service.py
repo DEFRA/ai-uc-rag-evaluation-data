@@ -1,7 +1,7 @@
 import datetime
 import logging
 
-from app.common.embedding.service import AbstractEmbeddingService
+from app.common.embedding import service as embedding
 from app.knowledge_management import models as km_models
 from app.snapshot import models, repository
 
@@ -15,7 +15,7 @@ class SnapshotService:
         self,
         snapshot_repo: repository.MongoKnowledgeSnapshotRepository,
         vector_repo: repository.AbstractKnowledgeVectorRepository,
-        embedding_service: AbstractEmbeddingService,
+        embedding_service: embedding.AbstractEmbeddingService,
     ):
         self._snapshot_repo = snapshot_repo
         self._vector_repo = vector_repo

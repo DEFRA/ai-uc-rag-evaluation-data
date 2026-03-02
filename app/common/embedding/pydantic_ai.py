@@ -1,22 +1,19 @@
-from pydantic_ai import Embedder
-from pydantic_ai.embeddings.bedrock import (
-    BedrockEmbeddingModel,
-    BedrockEmbeddingSettings,
-)
-from pydantic_ai.providers.bedrock import BedrockProvider
+import pydantic_ai
+from pydantic_ai.embeddings import bedrock as bedrock_models
+from pydantic_ai.providers import bedrock as bedrock_providers
 
-from app.common.embedding.service import AbstractEmbeddingService
-from app.config import AppConfig
+import app.common.embedding.service as embedding_service
+import app.config as config
 
 
-class PydanticAiEmbeddingService(AbstractEmbeddingService):
-    def __init__(self, config: AppConfig):
-        provider = BedrockProvider(
+class PydanticAiEmbeddingService(embedding_service.AbstractEmbeddingService):
+    def __init__(self, config: config.AppConfig):
+        provider = bedrock_providers.BedrockProvider(
             region_name=config.aws_region,
         )
-        self._embedder = Embedder(
-            settings=BedrockEmbeddingSettings(),
-            model=BedrockEmbeddingModel(
+        self._embedder = pydantic_ai.Embedder(
+            settings=bedrock_models.BedrockEmbeddingSettings(),
+            model=bedrock_models.BedrockEmbeddingModel(
                 config.bedrock_embedding_config.model_id, provider=provider
             ),
         )

@@ -2,18 +2,18 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from app.common.embedding.pydantic_ai import PydanticAiEmbeddingService
-from app.config import AppConfig, BedrockEmbeddingConfig
+from app import config as config
+from app.common.embedding import pydantic_ai
 
 
 @pytest.fixture
 def mock_config():
     """Create a mock config for testing."""
-    config = Mock(spec=AppConfig)
-    config.aws_region = "us-east-1"
-    config.bedrock_embedding_config = Mock(spec=BedrockEmbeddingConfig)
-    config.bedrock_embedding_config.model_id = "amazon.titan-embed-text-v2:0"
-    return config
+    app_config = Mock(spec=config.AppConfig)
+    app_config.aws_region = "us-east-1"
+    app_config.bedrock_embedding_config = Mock(spec=config.BedrockEmbeddingConfig)
+    app_config.bedrock_embedding_config.model_id = "amazon.titan-embed-text-v2:0"
+    return app_config
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ async def test_generate_embeddings_success(mock_config, mock_embedding_result):
     """Test successful embedding generation."""
 
     # Mock the embedder directly on the instance
-    service = PydanticAiEmbeddingService(mock_config)
+    service = pydantic_ai.PydanticAiEmbeddingService(mock_config)
     service._embedder = AsyncMock()
     service._embedder.embed_documents.return_value = mock_embedding_result
 
