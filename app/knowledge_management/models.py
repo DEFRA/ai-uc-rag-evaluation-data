@@ -24,6 +24,7 @@ class KnowledgeSource:
         self.name = name
         self.source_type = source_type
         self.location = location
+        self.upload_status: str = "Unknown"
 
     def __eq__(self, other):
         if not isinstance(other, KnowledgeSource):

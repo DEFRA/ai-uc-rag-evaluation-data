@@ -27,6 +27,7 @@ class PostgresConfig(pydantic_settings.BaseSettings):
 class UploaderConfig(pydantic_settings.BaseSettings):
     model_config = pydantic_settings.SettingsConfigDict()
     cdp_uploader_url: str = pydantic.Field(..., alias="CDP_UPLOADER_URL")
+    callback_base_url: str = pydantic.Field(..., alias="UPLOAD_CALLBACK_BASE_URL")
 
 
 class AppConfig(pydantic_settings.BaseSettings):

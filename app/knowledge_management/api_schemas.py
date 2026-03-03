@@ -29,6 +29,11 @@ class KnowledgeSourceResponse(KnowledgeSource):
         description="The unique identifier of the knowledge source",
         serialization_alias="sourceId",
     )
+    upload_status: str = Field(
+        default="Unknown",
+        description="The upload status of the source",
+        serialization_alias="uploadStatus",
+    )
 
 
 class CreateKnowledgeGroupRequest(BaseModel):

@@ -4,7 +4,8 @@ from typing import Annotated
 import fastapi
 import pydantic
 
-from app.upload import dependencies, service as upload_service
+from app.upload import dependencies
+from app.upload import service as upload_service
 
 logger = getLogger(__name__)
 
@@ -24,10 +25,42 @@ async def upload_initiate(
         fastapi.Depends(dependencies.get_upload_service),
     ],
 ):
-
     logger.info("Initiating upload with redirect: %s", request.redirect)
 
     return await service.initiate_upload(
         redirect=request.redirect,
-        groupId=request.groupId
+        groupId=request.groupId,
     )
+
+
+class UploadCompletedRequest(pydantic.BaseModel):
+    class Metadata(pydantic.BaseModel):
+        groupId: str
+
+    class Form(pydantic.BaseModel):
+        class File(pydantic.BaseModel):
+            s3Key: str
+            s3Bucket: str
+
+        file: File
+
+    uploadStatus: str
+    metadata: Metadata
+    form: Form
+
+
+@router.post("/upload-completed")
+async def upload_completed(
+    body: UploadCompletedRequest,
+    upload_service: Annotated[
+        upload_service.UploadService,
+        fastapi.Depends(dependencies.get_upload_service),
+    ],
+):
+    await upload_service.save_completed(
+        upload_status=body.uploadStatus,
+        s3_bucket=body.form.file.s3Bucket,
+        s3_key=body.form.file.s3Key,
+    )
+
+    return fastapi.Response(status_code=fastapi.status.HTTP_200_OK)

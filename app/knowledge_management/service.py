@@ -1,6 +1,7 @@
 import logging
 
 from app.knowledge_management import models, repository
+from app.upload import repository as upload_repository
 
 logger = logging.getLogger(__name__)
 
@@ -8,8 +9,13 @@ logger = logging.getLogger(__name__)
 class KnowledgeManagementService:
     """Service for managing knowledge groups and their metadata"""
 
-    def __init__(self, group_repo: repository.AbstractKnowledgeGroupRepository):
+    def __init__(
+        self,
+        group_repo: repository.AbstractKnowledgeGroupRepository,
+        upload_repo: upload_repository.UploadRecordRepository,
+    ):
         self.group_repo = group_repo
+        self.upload_repo = upload_repo
 
     async def create_knowledge_group(self, group: models.KnowledgeGroup) -> None:
         """
@@ -54,6 +60,8 @@ class KnowledgeManagementService:
         entry = await self.group_repo.get_by_id(group_id)
 
         if entry:
+            for source in entry.sources.values():
+                source.upload_status = await self.upload_repo.get_status_by_location(source.location) or "Unknown"
             return entry
 
         msg = f"Knowledge entry with group ID '{group_id}' not found"
@@ -104,5 +112,7 @@ class KnowledgeManagementService:
 
         # Update the domain model and return updated group
         group.add_source(source)
+
+        source.upload_status = await self.upload_repo.get_status_by_location(source.location) or "Unknown"
 
         return group
