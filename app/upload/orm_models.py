@@ -22,6 +22,8 @@ upload_records = sqlalchemy.Table(
 
 
 def start_mappers():
+    if mapper_registry.mappers:
+        return
     mapper_registry.map_imperatively(
         models.UploadRecord,
         upload_records,
