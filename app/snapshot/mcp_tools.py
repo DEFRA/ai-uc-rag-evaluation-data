@@ -1,5 +1,6 @@
 from app import config
-from app.common import bedrock, mongo, postgres
+from app.common import mongo, postgres
+from app.common.embedding import pydantic_ai
 from app.infra import mcp_server
 from app.knowledge_management import repository as km_repository
 from app.knowledge_management import service as km_service
@@ -21,9 +22,7 @@ async def relevant_sources_by_group(
     vector_repo = repository.PostgresKnowledgeVectorRepository(session_factory)
     group_repo = km_repository.MongoKnowledgeGroupRepository(db)
 
-    embedding_service = bedrock.BedrockEmbeddingService(
-        bedrock.get_bedrock_client(), config.config.bedrock_embedding_config
-    )
+    embedding_service = pydantic_ai.PydanticAiEmbeddingService(config.config)
     snapshot_service = service.SnapshotService(
         snapshot_repo, vector_repo, embedding_service
     )

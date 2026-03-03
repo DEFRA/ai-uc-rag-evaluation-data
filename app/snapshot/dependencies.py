@@ -4,7 +4,9 @@ import fastapi
 import pymongo.asynchronous.database
 
 from app import config
-from app.common import bedrock, mongo, postgres
+from app.common import mongo, postgres
+from app.common.embedding import pydantic_ai
+from app.common.embedding import service as embedding
 from app.snapshot import repository, service
 
 
@@ -22,11 +24,9 @@ def get_knowledge_vector_repository(
     return repository.PostgresKnowledgeVectorRepository(session_factory)
 
 
-def get_bedrock_embedding_service() -> bedrock.AbstractEmbeddingService:
+def get_pydantic_embedding_service() -> embedding.AbstractEmbeddingService:
     """Dependency injection for BedrockEmbeddingService."""
-    return bedrock.BedrockEmbeddingService(
-        bedrock.get_bedrock_client(), config.config.bedrock_embedding_config
-    )
+    return pydantic_ai.PydanticAiEmbeddingService(config.config)
 
 
 def get_snapshot_service(
@@ -36,8 +36,8 @@ def get_snapshot_service(
     vector_repo: repository.AbstractKnowledgeVectorRepository = fastapi.Depends(
         get_knowledge_vector_repository
     ),
-    embedding_service: bedrock.AbstractEmbeddingService = fastapi.Depends(
-        get_bedrock_embedding_service
+    embedding_service: embedding.AbstractEmbeddingService = fastapi.Depends(
+        get_pydantic_embedding_service
     ),
 ) -> service.SnapshotService:
     """Dependency injection for SnapshotService."""

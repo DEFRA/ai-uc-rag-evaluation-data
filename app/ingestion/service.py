@@ -3,7 +3,7 @@ import logging
 
 import fastapi
 
-from app.common import bedrock
+from app.common.embedding import service as embedding
 from app.ingestion import models as ingestion_models
 from app.ingestion import repository
 from app.knowledge_management import models as km_models
@@ -21,7 +21,7 @@ class IngestionService:
     def __init__(
         self,
         ingestion_repository: repository.AbstractIngestionDataRepository,
-        embedding_service: bedrock.AbstractEmbeddingService,
+        embedding_service: embedding.AbstractEmbeddingService,
         snapshot_service: snapshot_service.SnapshotService,
         background_tasks: fastapi.BackgroundTasks,
     ):
@@ -152,7 +152,7 @@ class IngestionService:
 
         for chunk_no in range(len(chunks)):
             chunk = chunks[chunk_no]
-            embedding = self.embedding_service.generate_embeddings(chunk.text)
+            embedding = await self.embedding_service.generate_embeddings(chunk.text)
             vector = ingestion_models.IngestionVector(
                 content=chunk.text,
                 embedding=embedding,
