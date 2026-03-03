@@ -12,9 +12,9 @@ logger = getLogger(__name__)
 router = fastapi.APIRouter(tags=["upload"])
 
 
-class InitiateUploadRequest(pydantic.BaseModel):
+class InitiateUploadRequest(pydantic.BaseModel):  # noqa: N815
     redirect: str
-    groupId: str
+    groupId: str  # noqa: N815
 
 
 @router.post("/upload-initiate")
@@ -29,22 +29,22 @@ async def upload_initiate(
 
     return await service.initiate_upload(
         redirect=request.redirect,
-        groupId=request.groupId,
+        group_id=request.groupId,
     )
 
 
 class UploadCompletedRequest(pydantic.BaseModel):
     class Metadata(pydantic.BaseModel):
-        groupId: str
+        groupId: str  # noqa: N815
 
     class Form(pydantic.BaseModel):
         class File(pydantic.BaseModel):
-            s3Key: str
-            s3Bucket: str
+            s3Key: str  # noqa: N815
+            s3Bucket: str  # noqa: N815
 
         file: File
 
-    uploadStatus: str
+    uploadStatus: str  # noqa: N815
     metadata: Metadata
     form: Form
 

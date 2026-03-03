@@ -13,7 +13,9 @@ def get_upload_record_repository(
 
 
 def get_upload_service(
-    upload_repo: upload_repository.UploadRecordRepository = fastapi.Depends(get_upload_record_repository),
+    upload_repo: upload_repository.UploadRecordRepository = fastapi.Depends(
+        get_upload_record_repository
+    ),
 ) -> upload_service.UploadService:
     return upload_service.UploadService(
         cdp_uploader_url=app_config.config.uploader.cdp_uploader_url,

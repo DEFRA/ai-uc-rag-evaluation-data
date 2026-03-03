@@ -61,7 +61,10 @@ class KnowledgeManagementService:
 
         if entry:
             for source in entry.sources.values():
-                source.upload_status = await self.upload_repo.get_status_by_location(source.location) or "Unknown"
+                source.upload_status = (
+                    await self.upload_repo.get_status_by_location(source.location)
+                    or "Unknown"
+                )
             return entry
 
         msg = f"Knowledge entry with group ID '{group_id}' not found"
@@ -113,6 +116,8 @@ class KnowledgeManagementService:
         # Update the domain model and return updated group
         group.add_source(source)
 
-        source.upload_status = await self.upload_repo.get_status_by_location(source.location) or "Unknown"
+        source.upload_status = (
+            await self.upload_repo.get_status_by_location(source.location) or "Unknown"
+        )
 
         return group

@@ -16,8 +16,9 @@ class UploadRecordRepository:
     async def get_status_by_location(self, location: str) -> str | None:
         async with self.session_factory() as session:
             result = await session.execute(
-                sqlalchemy.select(orm_models.upload_records.c.upload_status)
-                .where(orm_models.upload_records.c.location == location)
+                sqlalchemy.select(orm_models.upload_records.c.upload_status).where(
+                    orm_models.upload_records.c.location == location
+                )
             )
             row = result.first()
             return row.upload_status if row else None
