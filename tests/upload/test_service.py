@@ -33,7 +33,9 @@ async def test_initiate_upload_success(service):
     mock_client.__aenter__ = AsyncMock(return_value=mock_client)
     mock_client.__aexit__ = AsyncMock(return_value=None)
 
-    with patch("app.upload.service.http_client.create_async_client", return_value=mock_client):
+    with patch(
+        "app.upload.service.http_client.create_async_client", return_value=mock_client
+    ):
         result = await service.initiate_upload(redirect="/done", group_id="kg_123")
 
     assert result == {"uploadId": "abc123"}
@@ -59,9 +61,14 @@ async def test_initiate_upload_raises_on_non_201(service):
     mock_client.__aenter__ = AsyncMock(return_value=mock_client)
     mock_client.__aexit__ = AsyncMock(return_value=None)
 
-    with patch("app.upload.service.http_client.create_async_client", return_value=mock_client):
-        with pytest.raises(ValueError, match="400"):
-            await service.initiate_upload(redirect="/done", group_id="kg_123")
+    with (
+        patch(
+            "app.upload.service.http_client.create_async_client",
+            return_value=mock_client,
+        ),
+        pytest.raises(ValueError, match="400"),
+    ):
+        await service.initiate_upload(redirect="/done", group_id="kg_123")
 
 
 @pytest.mark.asyncio

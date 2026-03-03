@@ -16,7 +16,9 @@ def mock_upload_repo():
 
 @pytest.fixture
 def client(mock_upload_repo):
-    app.dependency_overrides[dependencies.get_upload_record_repository] = lambda: mock_upload_repo
+    app.dependency_overrides[dependencies.get_upload_record_repository] = (
+        lambda: mock_upload_repo
+    )
     yield TestClient(app, raise_server_exceptions=False)
     app.dependency_overrides.clear()
 
@@ -25,7 +27,10 @@ def client(mock_upload_repo):
 def mock_cdp_uploader_response():
     mock_response = MagicMock()
     mock_response.status_code = 201
-    mock_response.json.return_value = {"uploadId": "abc123", "uploadUrl": "http://upload-here"}
+    mock_response.json.return_value = {
+        "uploadId": "abc123",
+        "uploadUrl": "http://upload-here",
+    }
     mock_client = AsyncMock()
     mock_client.post.return_value = mock_response
     mock_client.__aenter__ = AsyncMock(return_value=mock_client)
@@ -34,7 +39,10 @@ def mock_cdp_uploader_response():
 
 
 def test_upload_initiate_success(client, mock_cdp_uploader_response):
-    with patch("app.upload.service.http_client.create_async_client", return_value=mock_cdp_uploader_response):
+    with patch(
+        "app.upload.service.http_client.create_async_client",
+        return_value=mock_cdp_uploader_response,
+    ):
         response = client.post(
             "/upload-initiate",
             json={"redirect": "/done", "groupId": "kg_123"},
@@ -62,7 +70,10 @@ def test_upload_initiate_cdp_error(client, mock_cdp_uploader_response):
     mock_cdp_uploader_response.post.return_value.status_code = 400
     mock_cdp_uploader_response.post.return_value.text = "Bad Request"
 
-    with patch("app.upload.service.http_client.create_async_client", return_value=mock_cdp_uploader_response):
+    with patch(
+        "app.upload.service.http_client.create_async_client",
+        return_value=mock_cdp_uploader_response,
+    ):
         response = client.post(
             "/upload-initiate",
             json={"redirect": "/done", "groupId": "kg_123"},
