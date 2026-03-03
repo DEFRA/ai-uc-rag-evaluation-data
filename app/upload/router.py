@@ -25,8 +25,6 @@ async def upload_initiate(
         fastapi.Depends(dependencies.get_upload_service),
     ],
 ):
-    logger.info("Initiating upload with redirect: %s", request.redirect)
-
     return await service.initiate_upload(
         redirect=request.redirect,
         group_id=request.groupId,
