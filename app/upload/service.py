@@ -39,13 +39,6 @@ class UploadService:
                 json=payload,
             )
 
-        logger.error(
-            "CDP uploader response status: %s content-type: %s, body: %s",
-            response.status_code,
-            response.headers.get("content-type"),
-            response.text,
-        )
-
         if response.status_code != 201:
             error_message = f"CDP uploader initiate failed with status {response.status_code}: {response.text}"
             raise ValueError(error_message)
