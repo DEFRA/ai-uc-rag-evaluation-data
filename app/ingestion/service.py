@@ -106,7 +106,7 @@ class IngestionService:
         """
         logger.info("Processing pre-chunked source: %s", source.source_id)
 
-        chunk_files = self.ingestion_repository.list(source.source_id)
+        chunk_files = self.ingestion_repository.list(source.location)
 
         if len(chunk_files) == 0:
             msg = f"No pre-chunked data found for source {source.source_id}"
