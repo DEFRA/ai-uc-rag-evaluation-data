@@ -30,6 +30,10 @@ class KnowledgeSnapshotResponse(pydantic.BaseModel):
         description="The creation date of the knowledge snapshot in ISO format",
         alias="createdAt",
     )
+    ingestion_status: str = pydantic.Field(
+        description="The ingestion status of the snapshot",
+        alias="ingestionStatus",
+    )
     sources: list[dict] = pydantic.Field(
         description="List of knowledge snapshot sources"
     )

@@ -87,6 +87,10 @@ class SnapshotService:
 
         return snapshot
 
+    async def update_ingestion_status(self, snapshot_id: str, status: str) -> None:
+        """Update the ingestion status of a snapshot."""
+        await self._snapshot_repo.update_ingestion_status(snapshot_id, status)
+
     async def store_vectors(self, vectors: list[models.KnowledgeVector]) -> None:
         """
         Store a batch of knowledge vectors in the repository.

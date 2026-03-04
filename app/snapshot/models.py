@@ -1,7 +1,14 @@
 import dataclasses
 import datetime
+from enum import StrEnum
 
 from app.knowledge_management import models as km_models
+
+
+class IngestionStatus(StrEnum):
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    FAILED = "failed"
 
 
 @dataclasses.dataclass
@@ -42,13 +49,14 @@ class KnowledgeVectorResult:
         return "low"
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass
 class KnowledgeSnapshot:
     """Represents a snapshot of a knowledge group at a specific point in time."""
 
     group_id: str
     version: int
     created_at: datetime.date
+    ingestion_status: str = IngestionStatus.IN_PROGRESS
     sources: dict[str, km_models.KnowledgeSource] = dataclasses.field(
         default_factory=dict
     )

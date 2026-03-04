@@ -189,6 +189,7 @@ async def list_group_snapshots(
             "group_id": snapshot.group_id,
             "version": snapshot.version,
             "created_at": snapshot.created_at.isoformat(),
+            "ingestion_status": snapshot.ingestion_status,
             "sources": [source.__dict__ for source in snapshot.sources.values()],
         }
         for snapshot in snapshots

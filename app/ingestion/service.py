@@ -7,6 +7,7 @@ from app.common.embedding import service as embedding
 from app.ingestion import models as ingestion_models
 from app.ingestion import repository
 from app.knowledge_management import models as km_models
+from app.snapshot import models as snapshot_models
 from app.snapshot import service as snapshot_service
 
 logger = logging.getLogger(__name__)
@@ -65,6 +66,14 @@ class IngestionService:
         try:
             for source in group.sources.values():
                 await self._process_source(source, snapshot_id)
+            await self.snapshot_service.update_ingestion_status(
+                snapshot_id, snapshot_models.IngestionStatus.COMPLETED
+            )
+        except Exception:
+            await self.snapshot_service.update_ingestion_status(
+                snapshot_id, snapshot_models.IngestionStatus.FAILED
+            )
+            raise
         finally:
             _ingest_in_progress.discard(group.group_id)
 
