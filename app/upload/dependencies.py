@@ -1,15 +1,16 @@
 import fastapi
+import pymongo.asynchronous.database
 
 from app import config as app_config
-from app.common import postgres
+from app.common import mongo
 from app.upload import repository as upload_repository
 from app.upload import service as upload_service
 
 
 def get_upload_record_repository(
-    session_factory=fastapi.Depends(postgres.get_async_session_factory),
+    db: pymongo.asynchronous.database.AsyncDatabase = fastapi.Depends(mongo.get_db),
 ) -> upload_repository.UploadRecordRepository:
-    return upload_repository.UploadRecordRepository(session_factory)
+    return upload_repository.UploadRecordRepository(db)
 
 
 def get_upload_service(

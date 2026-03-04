@@ -7,37 +7,37 @@ from app.upload.repository import UploadRecordRepository
 
 
 @pytest.fixture
-def mock_session():
-    session = AsyncMock()
-    session.__aenter__ = AsyncMock(return_value=session)
-    session.__aexit__ = AsyncMock(return_value=None)
-    return session
+def mock_collection():
+    return AsyncMock()
 
 
 @pytest.fixture
-def repo(mock_session):
-    return UploadRecordRepository(MagicMock(return_value=mock_session))
+def repo(mock_collection):
+    db = MagicMock()
+    db.get_collection.return_value = mock_collection
+    return UploadRecordRepository(db)
 
 
 @pytest.mark.asyncio
-async def test_save(repo, mock_session):
+async def test_save(repo, mock_collection):
     record = models.UploadRecord(
         upload_status="ready", location="s3://bucket/file.jsonl"
     )
 
     await repo.save(record)
 
-    mock_session.add.assert_called_once_with(record)
-    mock_session.commit.assert_called_once()
+    mock_collection.insert_one.assert_called_once()
+    doc = mock_collection.insert_one.call_args[0][0]
+    assert doc["uploadStatus"] == "ready"
+    assert doc["location"] == "s3://bucket/file.jsonl"
 
 
 @pytest.mark.asyncio
-async def test_get_status_by_location_returns_status(repo, mock_session):
-    mock_row = MagicMock()
-    mock_row.upload_status = "ready"
-    mock_result = MagicMock()
-    mock_result.first.return_value = mock_row
-    mock_session.execute.return_value = mock_result
+async def test_get_status_by_location_returns_status(repo, mock_collection):
+    mock_collection.find_one.return_value = {
+        "uploadStatus": "ready",
+        "location": "s3://bucket/file.jsonl",
+    }
 
     result = await repo.get_status_by_location("s3://bucket/file.jsonl")
 
@@ -45,10 +45,10 @@ async def test_get_status_by_location_returns_status(repo, mock_session):
 
 
 @pytest.mark.asyncio
-async def test_get_status_by_location_returns_none_when_not_found(repo, mock_session):
-    mock_result = MagicMock()
-    mock_result.first.return_value = None
-    mock_session.execute.return_value = mock_result
+async def test_get_status_by_location_returns_none_when_not_found(
+    repo, mock_collection
+):
+    mock_collection.find_one.return_value = None
 
     result = await repo.get_status_by_location("s3://bucket/missing.jsonl")
 
