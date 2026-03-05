@@ -80,3 +80,8 @@ class KnowledgeGroupResponse(BaseModel):
     sources: dict[str, KnowledgeSourceResponse] = Field(
         ..., description="The sources associated with the knowledge group"
     )
+    active_snapshot: str | None = Field(
+        default=None,
+        description="The ID of the active snapshot for this knowledge group",
+        serialization_alias="activeSnapshot",
+    )
