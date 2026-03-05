@@ -45,13 +45,12 @@ class UploadService:
 
         return response.json()
 
-    async def save_completed(
-        self, upload_status: str, s3_bucket: str, s3_key: str
-    ) -> None:
-        location = f"s3://{s3_bucket}/{s3_key}"
+    async def save_completed(self, upload_status: str, s3_key: str) -> None:
+        # Store the object key as the upload location so it matches
+        # the value used by knowledge sources (which currently use the key).
         await self._upload_repo.save(
             models.UploadRecord(
                 upload_status=upload_status,
-                location=location,
+                location=s3_key,
             )
         )

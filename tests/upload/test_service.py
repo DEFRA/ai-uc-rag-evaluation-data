@@ -75,11 +75,10 @@ async def test_initiate_upload_raises_on_non_201(service):
 async def test_save_completed(service, mock_upload_repo):
     await service.save_completed(
         upload_status="ready",
-        s3_bucket="my-bucket",
         s3_key="folder/file.jsonl",
     )
 
     mock_upload_repo.save.assert_called_once()
     saved_record = mock_upload_repo.save.call_args[0][0]
     assert saved_record.upload_status == "ready"
-    assert saved_record.location == "s3://my-bucket/folder/file.jsonl"
+    assert saved_record.location == "folder/file.jsonl"
