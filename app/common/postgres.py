@@ -8,6 +8,7 @@ import sqlalchemy.ext.asyncio
 from app import config
 from app.common import tls
 from app.snapshot import orm_models
+from app.upload import orm_models as upload_orm_models
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,7 @@ async def get_sql_engine() -> sqlalchemy.ext.asyncio.AsyncEngine:
         )
 
     orm_models.start_mappers()
+    upload_orm_models.start_mappers()
     logger.info("SQLAlchemy ORM mappers started")
 
     sqlalchemy.event.listen(engine.sync_engine, "do_connect", get_token)

@@ -19,5 +19,7 @@ def pytest_configure(config):  # noqa: ARG001
             "INGESTION_DATA_BUCKET_NAME": "ai-uc-rag-evolution-data-ingestion-data",
             "PORT": "8000",
             "LOCALSTACK_URL": "http://localhost:4566",
+            "CDP_UPLOADER_URL": "http://uploader",
+            "UPLOAD_CALLBACK_BASE_URL": "http://callback",
         }
     )

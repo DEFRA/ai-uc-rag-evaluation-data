@@ -18,7 +18,11 @@ def _map_sources(
 ) -> dict[str, api_schemas.KnowledgeSourceResponse]:
     return {
         sid: api_schemas.KnowledgeSourceResponse(
-            source_id=s.source_id, name=s.name, type=s.source_type, location=s.location
+            source_id=s.source_id,
+            name=s.name,
+            type=s.source_type,
+            location=s.location,
+            upload_status=s.upload_status,
         )
         for sid, s in sources.items()
     }

@@ -24,6 +24,12 @@ class PostgresConfig(pydantic_settings.BaseSettings):
     )
 
 
+class UploaderConfig(pydantic_settings.BaseSettings):
+    model_config = pydantic_settings.SettingsConfigDict()
+    cdp_uploader_url: str = pydantic.Field(..., alias="CDP_UPLOADER_URL")
+    callback_base_url: str = pydantic.Field(..., alias="UPLOAD_CALLBACK_BASE_URL")
+
+
 class AppConfig(pydantic_settings.BaseSettings):
     aws_region: str = pydantic.Field(..., alias="AWS_REGION")
     model_config = pydantic_settings.SettingsConfigDict()
@@ -41,6 +47,7 @@ class AppConfig(pydantic_settings.BaseSettings):
     ingestion_data_bucket: str = pydantic.Field(..., alias="INGESTION_DATA_BUCKET_NAME")
     postgres: PostgresConfig = PostgresConfig()
     bedrock_embedding_config: BedrockEmbeddingConfig = BedrockEmbeddingConfig()
+    uploader: UploaderConfig = UploaderConfig()
 
 
 config = AppConfig()

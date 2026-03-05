@@ -13,6 +13,8 @@ from app.knowledge_management import repository as km_repository
 from app.knowledge_management import service as km_service
 from app.snapshot import repository as snapshot_repository
 from app.snapshot import service as snapshot_service
+from app.upload import dependencies as upload_dependencies
+from app.upload import repository as upload_repository
 
 
 def get_knowledge_repository(
@@ -70,9 +72,12 @@ def get_knowledge_management_service(
     group_repo: km_repository.AbstractKnowledgeGroupRepository = fastapi.Depends(
         get_knowledge_repository
     ),
+    upload_repo: upload_repository.UploadRecordRepository = fastapi.Depends(
+        upload_dependencies.get_upload_record_repository
+    ),
 ) -> km_service.KnowledgeManagementService:
     """Dependency injection for KnowledgeManagementService."""
-    return km_service.KnowledgeManagementService(group_repo)
+    return km_service.KnowledgeManagementService(group_repo, upload_repo)
 
 
 def get_ingestion_service(

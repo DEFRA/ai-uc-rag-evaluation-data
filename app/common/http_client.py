@@ -7,8 +7,6 @@ from app.config import config
 
 logger = getLogger(__name__)
 
-proxies = {"http": str(config.http_proxy), "https": str(config.http_proxy)}
-
 
 async def async_hook_request_tracing(request):
     trace_id = ctx_trace_id.get(None)
@@ -39,7 +37,7 @@ def create_async_client(request_timeout: int = 30) -> httpx.AsyncClient:
 
     if config.http_proxy:
         logger.info("Using HTTP proxy: %s", config.http_proxy)
-        client_kwargs["proxies"] = proxies
+        client_kwargs["proxy"] = str(config.http_proxy)
 
     return httpx.AsyncClient(**client_kwargs)
 
@@ -61,6 +59,6 @@ def create_client(request_timeout: int = 30) -> httpx.Client:
 
     if config.http_proxy:
         logger.info("Using HTTP proxy: %s", config.http_proxy)
-        client_kwargs["proxies"] = proxies
+        client_kwargs["proxy"] = str(config.http_proxy)
 
     return httpx.Client(**client_kwargs)
