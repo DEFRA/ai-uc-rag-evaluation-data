@@ -199,5 +199,7 @@ compose/secrets.env
 
 coverage*
 /CLAUDE.md
+.claude
 
 ai-opportunities-action-plan.jsonl
+.mcp.json

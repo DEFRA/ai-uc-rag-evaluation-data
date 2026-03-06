@@ -155,6 +155,7 @@ async def get_group(
             created_at=group.created_at.isoformat(),
             updated_at=group.updated_at.isoformat(),
             sources=_map_sources(group.sources),
+            active_snapshot=group.active_snapshot,
         )
     except models.KnowledgeGroupNotFoundError as err:
         raise fastapi.HTTPException(

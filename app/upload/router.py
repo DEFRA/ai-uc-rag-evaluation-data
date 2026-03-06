@@ -38,7 +38,6 @@ class UploadCompletedRequest(pydantic.BaseModel):
     class Form(pydantic.BaseModel):
         class File(pydantic.BaseModel):
             s3Key: str  # noqa: N815
-            s3Bucket: str  # noqa: N815
 
         file: File
 
@@ -57,7 +56,6 @@ async def upload_completed(
 ):
     await upload_service.save_completed(
         upload_status=body.uploadStatus,
-        s3_bucket=body.form.file.s3Bucket,
         s3_key=body.form.file.s3Key,
     )
 

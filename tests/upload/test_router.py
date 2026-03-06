@@ -101,7 +101,7 @@ def test_upload_completed_success(client, mock_upload_repo):
     mock_upload_repo.save.assert_called_once()
     saved = mock_upload_repo.save.call_args[0][0]
     assert saved.upload_status == "ready"
-    assert saved.location == "s3://my-bucket/folder/file.jsonl"
+    assert saved.location == "folder/file.jsonl"
 
 
 def test_upload_completed_missing_fields(client):
