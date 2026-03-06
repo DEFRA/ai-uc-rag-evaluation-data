@@ -27,6 +27,10 @@ class AbstractKnowledgeSnapshotRepository(abc.ABC):
     async def get_latest_by_group(self, group_id: str):
         """Get the latest knowledge snapshot for a specific group"""
 
+    @abc.abstractmethod
+    async def update_ingestion_status(self, snapshot_id: str, status: str) -> None:
+        """Update the ingestion status of a snapshot"""
+
 
 class MongoKnowledgeSnapshotRepository(AbstractKnowledgeSnapshotRepository):
     def __init__(self, db: pymongo.asynchronous.database.AsyncDatabase):
@@ -43,6 +47,7 @@ class MongoKnowledgeSnapshotRepository(AbstractKnowledgeSnapshotRepository):
             "groupId": snapshot.group_id,
             "version": snapshot.version,
             "createdAt": bson.datetime_ms.DatetimeMS(snapshot.created_at),
+            "ingestionStatus": snapshot.ingestion_status,
             "sources": [
                 {
                     "sourceId": source.source_id,
@@ -64,7 +69,12 @@ class MongoKnowledgeSnapshotRepository(AbstractKnowledgeSnapshotRepository):
             return None
 
         snapshot = models.KnowledgeSnapshot(
-            group_id=doc["groupId"], version=doc["version"], created_at=doc["createdAt"]
+            group_id=doc["groupId"],
+            version=doc["version"],
+            created_at=doc["createdAt"],
+            ingestion_status=doc.get(
+                "ingestionStatus", models.IngestionStatus.IN_PROGRESS
+            ),
         )
 
         for source_doc in doc["sources"]:
@@ -79,6 +89,12 @@ class MongoKnowledgeSnapshotRepository(AbstractKnowledgeSnapshotRepository):
 
         return snapshot
 
+    async def update_ingestion_status(self, snapshot_id: str, status: str) -> None:
+        """Update the ingestion status of a snapshot"""
+        await self.knowledge_snapshots.update_one(
+            {"snapshotId": snapshot_id}, {"$set": {"ingestionStatus": status}}
+        )
+
     async def list_snapshots_by_group(
         self, group_id: str
     ) -> list[models.KnowledgeSnapshot]:
@@ -91,6 +107,9 @@ class MongoKnowledgeSnapshotRepository(AbstractKnowledgeSnapshotRepository):
                 group_id=doc["groupId"],
                 version=doc["version"],
                 created_at=doc["createdAt"],
+                ingestion_status=doc.get(
+                    "ingestionStatus", models.IngestionStatus.IN_PROGRESS
+                ),
             )
             for source_doc in doc["sources"]:
                 snapshot.add_source(
