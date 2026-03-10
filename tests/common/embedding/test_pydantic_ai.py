@@ -13,6 +13,7 @@ def mock_config():
     app_config.aws_region = "us-east-1"
     app_config.bedrock_embedding_config = Mock(spec=config.BedrockEmbeddingConfig)
     app_config.bedrock_embedding_config.model_id = "amazon.titan-embed-text-v2:0"
+    app_config.bedrock_embedding_config.inference_profile_arn = None
     return app_config
 
 
