@@ -5,6 +5,9 @@ import pydantic_settings
 class BedrockEmbeddingConfig(pydantic_settings.BaseSettings):
     model_config = pydantic_settings.SettingsConfigDict()
     model_id: str = pydantic.Field(..., alias="BEDROCK_EMBEDDING_MODEL_ID")
+    inference_profile_arn: str | None = pydantic.Field(
+        default=None, alias="BEDROCK_EMBEDDING_INFERENCE_PROFILE_ARN"
+    )
 
 
 class PostgresConfig(pydantic_settings.BaseSettings):
