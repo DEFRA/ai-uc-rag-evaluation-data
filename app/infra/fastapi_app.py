@@ -9,6 +9,7 @@ from app.common import mongo, postgres, tracing
 from app.health import router as health_router
 from app.infra import mcp_server
 from app.knowledge_management import router as knowledge_management_router
+from app.rag import router as rag_router
 from app.snapshot import router as snapshot_router
 from app.upload import router as upload_router
 
@@ -62,6 +63,7 @@ app.add_middleware(tracing.TraceIdMiddleware)
 app.include_router(health_router.router)
 app.include_router(knowledge_management_router.router)
 app.include_router(snapshot_router.router)
+app.include_router(rag_router.router)
 app.include_router(upload_router.router)
 
 app.mount("/", mcp_app)

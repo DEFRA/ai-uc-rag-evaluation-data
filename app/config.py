@@ -2,6 +2,14 @@ import pydantic
 import pydantic_settings
 
 
+class BedrockLLMConfig(pydantic_settings.BaseSettings):
+    model_config = pydantic_settings.SettingsConfigDict()
+    model_id: str = pydantic.Field(..., alias="BEDROCK_LLM_MODEL_ID")
+    inference_profile_arn: str | None = pydantic.Field(
+        default=None, alias="BEDROCK_LLM_INFERENCE_PROFILE_ARN"
+    )
+
+
 class BedrockEmbeddingConfig(pydantic_settings.BaseSettings):
     model_config = pydantic_settings.SettingsConfigDict()
     model_id: str = pydantic.Field(..., alias="BEDROCK_EMBEDDING_MODEL_ID")
@@ -50,6 +58,7 @@ class AppConfig(pydantic_settings.BaseSettings):
     ingestion_data_bucket: str = pydantic.Field(..., alias="INGESTION_DATA_BUCKET_NAME")
     postgres: PostgresConfig = PostgresConfig()
     bedrock_embedding_config: BedrockEmbeddingConfig = BedrockEmbeddingConfig()
+    bedrock_llm_config: BedrockLLMConfig = BedrockLLMConfig()
     uploader: UploaderConfig = UploaderConfig()
 
 

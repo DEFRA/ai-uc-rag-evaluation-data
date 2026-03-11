@@ -21,5 +21,7 @@ def pytest_configure(config):  # noqa: ARG001
             "LOCALSTACK_URL": "http://localhost:4566",
             "CDP_UPLOADER_URL": "http://uploader",
             "UPLOAD_CALLBACK_BASE_URL": "http://callback",
+            "BEDROCK_LLM_MODEL_ID": "anthropic.claude-3-haiku-20240307-v1:0",
+            "BEDROCK_LLM_INFERENCE_PROFILE_ARN": "arn:test",
         }
     )
