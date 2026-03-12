@@ -13,6 +13,11 @@ class QuerySnapshotRequest(pydantic.BaseModel):
         description="Maximum number of results to return",
         validation_alias="maxResults",
     )
+    snapshot_id: str | None = pydantic.Field(
+        default=None,
+        description="Specific snapshot to query. Defaults to the group's active snapshot.",
+        validation_alias="snapshotId",
+    )
 
 
 class KnowledgeSnapshotResponse(pydantic.BaseModel):
