@@ -106,34 +106,41 @@ class SnapshotService:
         logger.info("Successfully stored vectors for search")
 
     async def search_similar(
-        self, group: km_models.KnowledgeGroup, query: str, max_results: int
+        self,
+        group: km_models.KnowledgeGroup,
+        query: str,
+        max_results: int,
+        snapshot_id: str | None = None,
     ) -> list[models.KnowledgeVectorResult]:
         """
         Search for documents similar to the provided query within a specific snapshot.
 
         Args:
-            snapshot_id: The ID of the knowledge snapshot to base the search on
+            group: The knowledge group to search within
             query: The search query string
-            top_k: The maximum number of results to return
+            max_results: The maximum number of results to return
+            snapshot_id: The snapshot to search. Defaults to the group's active snapshot.
 
         Returns:
             A list of KnowledgeVectorResult objects representing the most relevant documents
 
         Raises:
             KnowledgeSnapshotNotFoundError: If the snapshot with the given ID does not exist
-            NoActiveSnapshotError: If the knowledge group has no active snapshot
+            NoActiveSnapshotError: If no snapshot_id is given and the group has no active snapshot
         """
 
-        if not group.active_snapshot:
+        effective_snapshot_id = snapshot_id or group.active_snapshot
+
+        if not effective_snapshot_id:
             msg = f"Knowledge group with ID '{group.group_id}' has no active snapshot"
             raise models.NoActiveSnapshotError(msg)
 
-        snapshot = await self.get_by_id(group.active_snapshot)
+        snapshot = await self.get_by_id(effective_snapshot_id)
 
         embedding = await self._embedding_service.generate_embeddings(query)
 
         documents = await self._vector_repo.query_by_snapshot(
-            embedding, group.active_snapshot, max_results
+            embedding, effective_snapshot_id, max_results
         )
 
         for doc in documents:
