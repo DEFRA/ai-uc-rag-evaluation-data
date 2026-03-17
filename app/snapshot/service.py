@@ -144,7 +144,7 @@ class SnapshotService:
         )
 
         for doc in documents:
-            source = snapshot.sources[doc.source_id]
+            source = snapshot.sources.get(doc.source_id)
 
             if not source:
                 continue
