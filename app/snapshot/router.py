@@ -79,12 +79,8 @@ async def query_snapshot(
     try:
         group = await knowledge_service.find_knowledge_group(request.group_id)
 
-        if not group.active_snapshot:
-            msg = f"Knowledge group with ID '{request.group_id}' has no active snapshot"
-            raise models.NoActiveSnapshotError(msg)
-
         documents = await snp_service.search_similar(
-            group, request.query, request.max_results
+            group, request.query, request.max_results, request.snapshot_id
         )
 
         return [
