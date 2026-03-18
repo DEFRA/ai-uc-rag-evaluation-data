@@ -19,7 +19,7 @@ dependencies = [
     "psycopg[binary,pool]==3.2.10",
     "pydantic-settings==2.9.1",
     "pymongo[aws,encryption,snappy,zstd]==4.13.1",
-    "pydantic-ai-slim[bedrock]==1.63.0",
+    "pydantic-ai-slim[bedrock]==1.70.0",
     "sqlalchemy==2.0.43",
     "click==8.1.8",
     "typer==0.15.1",
